@@ -1,0 +1,16 @@
+GET /new-match
+Результат: страница создания нового матча
+
+POST /new-match
+params: player1, player2
+Результат: редирект на match-score / сообщение об ошибке
+
+GET /match-score?uuid=$match_id
+params: uuid
+Результат: страница матча
+
+POST /match-score?uuid=$match_id
+params: uuid, playerId
+Результат: страница матча/ сохранение матча, страница матча с финальным счетом и без кнопок
+
+GET /matches

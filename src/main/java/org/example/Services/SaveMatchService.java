@@ -1,7 +1,7 @@
 package org.example.Services;
 
 import lombok.AllArgsConstructor;
-import org.example.DTO.MatchCreateDTO;
+import org.example.DTO.MatchSaveDTO;
 import org.example.Entities.Match;
 import org.example.Entities.Player;
 import org.example.Exceptions.EmptyException;
@@ -17,7 +17,7 @@ import java.util.Optional;
 public class SaveMatchService {
     private SessionSupplier supplier;
 
-    public Match create(MatchCreateDTO dto) throws EmptyException {
+    public Match save(MatchSaveDTO dto) throws EmptyException{
         try(Session session = supplier.getProxySession()){
             Transaction t = session.beginTransaction();
             try{

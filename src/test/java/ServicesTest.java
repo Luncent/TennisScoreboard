@@ -1,22 +1,17 @@
-import org.example.DTO.MatchCreateDTO;
+import org.example.DTO.MatchSaveDTO;
 import org.example.DTO.PlayerCreateDTO;
 import org.example.Entities.Match;
 import org.example.Entities.Player;
 import org.example.Exceptions.EmptyException;
 import org.example.Models.Score;
-import org.example.Repositories.MatchRepository;
-import org.example.Repositories.PlayerRepository;
 import org.example.Services.MatchService;
 import org.example.Services.PlayerService;
 import org.example.Services.SaveMatchService;
 import org.example.Utils.SessionSupplier;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,25 +82,25 @@ public class ServicesTest {
             serv.save(player);
         }
         for (int i = 1; i <= 10; i += 2) {
-            MatchCreateDTO match = MatchCreateDTO.builder()
+            MatchSaveDTO match = MatchSaveDTO.builder()
                     .player1(Long.valueOf(i))
                     .player2(Long.valueOf(i+1))
                     .winner(Long.valueOf(i))
                     .build();
-            sserv.create(match);
+            sserv.save(match);
         }
-        MatchCreateDTO match = MatchCreateDTO.builder()
+        MatchSaveDTO match = MatchSaveDTO.builder()
                 .player1(1L)
                 .player2(5L)
                 .winner(5L)
                 .build();
-        sserv.create(match);
-        match = MatchCreateDTO.builder()
+        sserv.save(match);
+        match = MatchSaveDTO.builder()
                 .player1(1L)
                 .player2(3L)
                 .winner(3L)
                 .build();
-        sserv.create(match);
+        sserv.save(match);
     }
 }
 

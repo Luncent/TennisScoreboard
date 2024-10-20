@@ -12,9 +12,11 @@ public class ActiveMatch {
     private final List<MatchSet> matchSets = new ArrayList<>(3);
     private final Map<Long, Integer> playersVictorySets = new HashMap<>();
     private int currentSet = 0;
+    @Getter
     private final Long player1_id;
+    @Getter
     private final Long player2_id;
-    private final int setsForVictory = 1;
+    private final int setsForVictory = 1;   //2 for win then field = 1
     
     public ActiveMatch(Long player1_id, Long player2_id) {
         matchSets.add(new MatchSet(player1_id, player2_id));

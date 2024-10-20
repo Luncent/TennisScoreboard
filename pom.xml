@@ -57,6 +57,12 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>2.3.3</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 
@@ -76,14 +82,6 @@
                             <version>1.18.20</version>
                         </path>
                     </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.4.0</version>
-                <configuration>
-                    <outputDirectory>D:\TomCat\apache-tomcat-8.5.94-windows-x64\apache-tomcat-8.5.94\webapps</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>

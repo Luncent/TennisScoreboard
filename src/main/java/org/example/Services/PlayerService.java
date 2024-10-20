@@ -31,7 +31,7 @@ public class PlayerService {
         }
     }
 
-    public Optional<Player> getByName(String name) throws EmptyException {
+    public Optional<Player> getByName(String name) {
         try(Session session = supplier.getProxySession()){
             Transaction t = session.beginTransaction();
             try {
@@ -47,7 +47,7 @@ public class PlayerService {
         }
     }
 
-    public Optional<Player> getById(Long id) throws EmptyException {
+    public Optional<Player> getById(Long id){
         try(Session session = supplier.getProxySession()){
             Transaction t = session.beginTransaction();
             try {

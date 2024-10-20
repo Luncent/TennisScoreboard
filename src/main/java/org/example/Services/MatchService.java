@@ -1,10 +1,8 @@
 package org.example.Services;
 
 import lombok.AllArgsConstructor;
-import org.example.DTO.MatchCreateDTO;
 import org.example.Entities.Match;
 import org.example.Repositories.MatchRepository;
-import org.example.Repositories.PlayerRepository;
 import org.example.Utils.SessionSupplier;
 import org.hibernate.Session;
 import org.hibernate.Transaction;

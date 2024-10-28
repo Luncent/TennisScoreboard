@@ -4,15 +4,20 @@ import lombok.Getter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.graph.GraphSemantic;
+import org.hibernate.graph.RootGraph;
 
 import javax.persistence.Query;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class BaseRepository<T,K extends Serializable> implements CRUD<T,K>{
     protected Class<T> clazz;
+    protected Map<String,Object> properties;
+    protected RootGraph graph;
     @Getter
     protected Session sessionProxy;
 
@@ -29,13 +34,13 @@ public abstract class BaseRepository<T,K extends Serializable> implements CRUD<T
 
     @Override
     public List<T> getAll() {
-            Query query = sessionProxy.createQuery("FROM "+ clazz.getName(), clazz);
-            return query.getResultList();
+            return sessionProxy.createQuery("FROM "+ clazz.getName(), clazz)
+                    .setHint(GraphSemantic.LOAD.getJpaHintName(), graph).list();
     }
 
     @Override
     public Optional<T> getById(K id) {
-        return Optional.ofNullable(sessionProxy.get(clazz, id));
+        return Optional.ofNullable(sessionProxy.find(clazz, id,properties));
     }
 
     @Override

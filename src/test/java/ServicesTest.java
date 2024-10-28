@@ -4,11 +4,15 @@ import org.example.Entities.Match;
 import org.example.Entities.Player;
 import org.example.Exceptions.EmptyException;
 import org.example.Models.Score;
+import org.example.Repositories.MatchRepository;
+import org.example.Repositories.PlayerRepository;
 import org.example.Services.MatchService;
 import org.example.Services.PlayerService;
 import org.example.Services.MatchPlayerService;
 import org.example.Utils.SessionSupplier;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.Test;
 
@@ -30,12 +34,12 @@ public class ServicesTest {
     }
     private void fillData(SessionFactory factory) throws EmptyException {
         List<PlayerCreateDTO> players = new ArrayList<>();
-        for (int i = 1; i <= 2000; i++) {
+        for (int i = 1; i <= 10; i++) {
             PlayerCreateDTO player = new PlayerCreateDTO("player" + i);
             players.add(player);
             serv.save(player);
         }
-        for (int i = 1; i <= 2000; i += 2) {
+        for (int i = 1; i <= 10; i += 2) {
             MatchSaveDTO match = MatchSaveDTO.builder()
                     .player1(Long.valueOf(i))
                     .player2(Long.valueOf(i+1))
@@ -114,14 +118,46 @@ public class ServicesTest {
     }
 
     @Test
-    public void test(){
-        String str = "   we ewd  ";
-        System.out.println("ed"+str.trim()+"ed");
+    public void test() throws EmptyException {
+        try (SessionFactory factory = new Configuration().configure().buildSessionFactory()) {
+            setupServices(factory);
+            fillData(factory);
+            try(Session session = factory.openSession()){
+                Transaction t = session.beginTransaction();
+                try{
+                    System.out.println("++++++++++++++++++++++++++++");
+                    MatchRepository repo = new MatchRepository(session);
+                    Optional<Match> matches = repo.getById(3L);
+                    System.out.println(matches.get());
+                    System.out.println(repo.getAll());
+                }
+                catch (Exception ex){
+                    t.rollback();
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
     @Test
-    public void test2(){
-        System.out.println(Score.SECOND_POINT.ordinal());
+    public void test2() throws EmptyException {
+        try (SessionFactory factory = new Configuration().configure().buildSessionFactory()) {
+            setupServices(factory);
+            fillData(factory);
+            try(Session session = factory.openSession()){
+                Transaction t = session.beginTransaction();
+                try{
+                    System.out.println("++++++++++++++++++++++++++++");
+                    PlayerRepository repo = new PlayerRepository(session);
+                    List<Player> players = repo.getAll();
+                    System.out.println(players);
+                }
+                catch (Exception ex){
+                    t.rollback();
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
 }

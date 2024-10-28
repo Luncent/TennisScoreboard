@@ -2,14 +2,22 @@ package org.example.Repositories;
 
 import org.example.Entities.Match;
 import org.hibernate.Session;
+import org.hibernate.graph.GraphSemantic;
+import org.hibernate.graph.RootGraph;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class MatchRepository extends BaseRepository<Match,Long>{
 
     public MatchRepository(Session sessionProxy) {
         super(sessionProxy, Match.class);
+        graph = sessionProxy.createEntityGraph(Match.class);
+        graph.addAttributeNodes("player1","player2","winner");
+        properties = new HashMap<>();
+        properties.put(GraphSemantic.LOAD.getJpaHintName(), graph);
     }
 
     @Override
@@ -34,12 +42,16 @@ public class MatchRepository extends BaseRepository<Match,Long>{
 
     public List<Match> getByPlayerName(String name){
         if(name==null || name.isEmpty()){
-            return sessionProxy.createQuery("FROM Match m",clazz).list();
+            return sessionProxy.createQuery("FROM Match m",clazz)
+                    .setHint(GraphSemantic.LOAD.getJpaHintName(), graph)
+                    .list();
         }
         return sessionProxy
                 .createQuery("FROM Match m WHERE LOWER(m.player1.name) LIKE LOWER(:name)" +
                         " OR LOWER(m.player2.name) LIKE LOWER(:name)",clazz)
-                .setParameter("name","%"+name+"%").list();
+                .setParameter("name","%"+name+"%")
+                .setHint(GraphSemantic.LOAD.getJpaHintName(), graph)
+                .list();
     }
 
     @Override
@@ -66,6 +78,7 @@ public class MatchRepository extends BaseRepository<Match,Long>{
             return sessionProxy.createQuery("FROM Match m",clazz)
                     .setFirstResult((page-1)*pageSize)
                     .setMaxResults(pageSize)
+                    .setHint(GraphSemantic.LOAD.getJpaHintName(), graph)
                     .list();
         }
         else{
@@ -75,6 +88,7 @@ public class MatchRepository extends BaseRepository<Match,Long>{
                     .setParameter("name", "%"+playerName+"%")
                     .setFirstResult((page-1)*pageSize)
                     .setMaxResults(pageSize)
+                    .setHint(GraphSemantic.LOAD.getJpaHintName(), graph)
                     .list();
         }
     }

@@ -4,6 +4,14 @@ import lombok.*;
 
 import javax.persistence.*;
 
+@NamedEntityGraph(
+    name="MatchAndPlayers",
+    attributeNodes = {
+        @NamedAttributeNode("player1"),
+        @NamedAttributeNode("player2"),
+        @NamedAttributeNode("winner")
+    }
+)
 @Entity
 @Table(name = "matches")
 @NoArgsConstructor

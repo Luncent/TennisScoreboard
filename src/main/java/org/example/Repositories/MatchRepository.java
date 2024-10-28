@@ -33,14 +33,49 @@ public class MatchRepository extends BaseRepository<Match,Long>{
     }
 
     public List<Match> getByPlayerName(String name){
+        if(name==null || name.isEmpty()){
+            return sessionProxy.createQuery("FROM Match m",clazz).list();
+        }
         return sessionProxy
-                .createQuery("FROM Match m WHERE m.player1.name=:name" +
-                        " OR m.player2.name=:name OR m.winner.name=:name",clazz)
-                .setParameter("name",name).list();
+                .createQuery("FROM Match m WHERE LOWER(m.player1.name) LIKE LOWER(:name)" +
+                        " OR LOWER(m.player2.name) LIKE LOWER(:name)",clazz)
+                .setParameter("name","%"+name+"%").list();
     }
 
     @Override
     public Match save(Match entity) {
         return super.save(entity);
+    }
+
+    public Long getRowsCount(String playerName) {
+        if(playerName==null || playerName.isEmpty()){
+            return sessionProxy.createQuery("SELECT COUNT(*) FROM Match m",Long.class).uniqueResult();
+        }
+        else{
+            return sessionProxy
+                    .createQuery("SELECT COUNT(*) FROM Match m " +
+                            "WHERE LOWER(m.player1.name) LIKE LOWER(:name)" +
+                            " OR LOWER(m.player2.name) LIKE LOWER(:name)", Long.class)
+                    .setParameter("name","%"+playerName+"%")
+                    .uniqueResult();
+        }
+    }
+
+    public List<Match> selectPaginated(String playerName, int page, int pageSize) {
+        if(playerName==null || playerName.isEmpty()){
+            return sessionProxy.createQuery("FROM Match m",clazz)
+                    .setFirstResult((page-1)*pageSize)
+                    .setMaxResults(pageSize)
+                    .list();
+        }
+        else{
+            return sessionProxy.createQuery("FROM Match m WHERE" +
+                            " LOWER(m.player1.name) LIKE LOWER(:name)" +
+                            " OR LOWER(m.player2.name) LIKE LOWER(:name)",clazz)
+                    .setParameter("name", "%"+playerName+"%")
+                    .setFirstResult((page-1)*pageSize)
+                    .setMaxResults(pageSize)
+                    .list();
+        }
     }
 }

@@ -7,6 +7,7 @@ import org.example.Utils.SessionSupplier;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,22 @@ public class MatchService {
                 List<Match> matches = repo.getAll();
                 t.commit();
                 return matches;
+            }catch (Exception ex){
+                t.rollback();
+                ex.printStackTrace();
+                throw ex;
+            }
+        }
+    }
+
+    public List<Match> selectPaginated(String playerName, int page, int pageSize) {
+        try(Session session = supplier.getProxySession()){
+            Transaction t = session.beginTransaction();
+            try{
+                MatchRepository repo = new MatchRepository(session);
+                List<Match> paginatedMatches = repo.selectPaginated(playerName, page, pageSize);
+                t.commit();
+                return paginatedMatches;
             }catch (Exception ex){
                 t.rollback();
                 ex.printStackTrace();
@@ -62,14 +79,14 @@ public class MatchService {
         }
     }
 
-    Match save(Match entity){
+    public Long getRowsCount(String playerName){
         try(Session session = supplier.getProxySession()){
             Transaction t = session.beginTransaction();
             try{
                 MatchRepository repo = new MatchRepository(session);
-                Match match = repo.save(entity);
+                Long rows = repo.getRowsCount(playerName);
                 t.commit();
-                return match;
+                return rows;
             }catch (Exception ex){
                 t.rollback();
                 ex.printStackTrace();

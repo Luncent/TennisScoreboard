@@ -13,4 +13,5 @@ public class UUIDTest {
         System.out.println(newUUID.compareTo(uid));
         System.out.println(newUUID.compareTo(uid2));
     }
+
 }

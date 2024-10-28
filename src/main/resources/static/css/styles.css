@@ -1,0 +1,51 @@
+body{
+    background: transparent url("../img/tennis-scoreboard.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    margin: 0 auto;
+    display: flex;
+    background-position: center center;
+    background-repeat: no-repeat;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.imenu{
+    background-color: #271F1F;
+    border-radius: 15px;
+    width: 40%;
+    height: 44%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ibuttonsbox{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 65%;
+    height: 60%;
+}
+
+.ibutbox{
+    width: 100%;
+    height: 40%;
+}
+
+.ibutbox button{
+    font-family: 'ADLaM Display';
+    font-size: 48px;
+    width: 100%;
+    height: 100%;
+    background-color: #00E129;
+    border-width: 0;
+    border-radius: 10px;
+}
+
+button:hover {
+    cursor: pointer; /* Курсор при наведении */
+    transform: scale(1.02); /* Увеличиваем размер кнопки на 10% */
+    transition-duration: 500ms;
+}

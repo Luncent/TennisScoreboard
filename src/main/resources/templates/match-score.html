@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>New Match</title>
+	<link rel="stylesheet" th:href="@{css/match-score.css}" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Akshar' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=ADLaM Display' rel='stylesheet'>
+</head>
+<body>
+    <div class="header">
+        <div class="headerLine">
+            <div class="headerLogoBox">
+                <p>Tennis scoreboard</p>
+            </div>
+            <div class="headerLogoBox">
+                <a th:href="@{/}">Home</a>
+                <a th:href="@{/matches}">Matches</a>
+            </div>
+        </div>
+    </div>
+    <main>
+        <div class="errorContainer">
+            <div th:if="${error!=null}" class="error">
+                <p th:text="${error}"></p>
+            </div>
+        </div>
+        <div th:if="${matchInfo!=null}" class="scoreboardContainer">
+            <div class="centeredScorebContainer">
+                <div class="firstPlayerSets">
+                    <div class="set">
+                        <div th:class="${matchInfo.player1Sets>=1 ? 'green' : 'circle'}"></div>
+                    </div>
+                    <div class="set">
+                        <div th:class="${matchInfo.player1Sets>=2 ? 'green' : 'circle'}"></div>
+                    </div>
+                    <div class="set">
+                        <div th:class="${matchInfo.player1Sets>=3 ? 'green' : 'circle'}"></div>
+                    </div>
+                </div>
+                <div class="namesAndScore">
+                    <div class="names">
+                        <div th:text="${matchInfo.player1Name}" class="name"><p>Oleg</p></div>
+                        <div th:text="${matchInfo.player2Name}" class="name"><p>Rafael</p></div>
+                    </div>
+                    <div class="score">
+                        <div th:text="${matchInfo.player1Score}" class="playerScore"><p>15</p></div>
+                        <div class="currentSetAndButtons">
+                            <div class="currentSet">
+                                <p th:text="${matchInfo.currentSet}">0</p>
+                            </div>
+                            <div th:if="${#request.getAttribute('matchFinished')==null}" class="buttons">
+                                <form th:action="@{/match-score(uuid=${param.uuid}, playerScored=${matchInfo.player1Id})}" method="POST">
+                                    <button type="submit">+</button>
+                                </form>
+                                <form th:action="@{/match-score(uuid=${param.uuid}, playerScored=${matchInfo.player2Id})}" method="POST">
+                                    <button type="submit">+</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div th:text="${matchInfo.player2Score}" class="playerScore"><p>15</p></div>
+                    </div>
+                </div>
+                <div class="secondPlayerSets">
+                    <div class="set">
+                        <div th:class="${matchInfo.player2Sets ? 'green' : 'circle'}"></div>
+                    </div>
+                    <div class="set">
+                        <div th:class="${matchInfo.player2Sets>=2 ? 'green' : 'circle'}"></div>
+                    </div>
+                    <div class="set">
+                        <div th:class="${matchInfo.player2Sets>=3 ? 'green' : 'circle'}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

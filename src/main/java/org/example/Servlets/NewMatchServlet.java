@@ -9,6 +9,8 @@ import org.example.Models.ActiveMatch;
 import org.example.Services.PlayerService;
 import org.example.Validators.MatchValidator;
 import org.example.Validators.PlayerValidator;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,23 +28,28 @@ public class NewMatchServlet extends HttpServlet {
     private MatchValidator matchValidator;
     private PlayerService playerService;
     private ConcurrentHashMap<UUID, ActiveMatch> matches;
+    private TemplateEngine templateEngine;
 
     @Override
     public void init() throws ServletException {
         matchValidator = (MatchValidator) getServletContext().getAttribute("matchValidator");
         playerService = (PlayerService) getServletContext().getAttribute("playerService");
         matches = (ConcurrentHashMap<UUID,ActiveMatch>)getServletContext().getAttribute("matches");
+        templateEngine = (TemplateEngine) getServletContext().getAttribute("templateEngine");
         System.out.println("new-match servlet initializing");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("WEB-INF/views/new_match.jsp").forward(req,resp);
+        PrintWriter writer = resp.getWriter();
+        String html = templateEngine.process("new-match",new WebContext(req,resp,getServletContext()));
+        writer.println(html);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter writer = resp.getWriter();
+        WebContext context= new WebContext(req,resp,getServletContext());
         String firstPlayerName = (req.getParameter("player1")+"").trim();
         String secondPlayerName = (req.getParameter("player2")+"").trim();
         MatchCreateDTO dto  = new MatchCreateDTO(firstPlayerName,secondPlayerName);
@@ -70,11 +77,14 @@ public class NewMatchServlet extends HttpServlet {
         } catch (ValidationException ex){
             ex.printStackTrace();
             resp.setStatus(400);
-            writer.println(ex.getMessage());
+            context.setVariable("error",ex.getMessage());
+            String html = templateEngine.process("new-match",context);
+            writer.println(html);
         } catch (Exception ex) {
             ex.printStackTrace();
             resp.setStatus(500);
-            writer.println(ex.getMessage());
+            String html = templateEngine.process("new-match",context);
+            writer.println(html);
         }
     }
 }

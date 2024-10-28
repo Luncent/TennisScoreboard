@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>MainPage</title>
+	<link rel="stylesheet" th:href="@{css/styles.css}" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=ADLaM Display' rel='stylesheet'>
+</head>
+<body>
+    <div class="imenu">
+        <div class="ibuttonsbox">
+            <form class="ibutbox" method="GET" th:action="@{/new-match}">
+                <button type="submit">New match</button>
+            </form>
+         
+            <form  class="ibutbox" method="GET" th:action="@{/matches}">
+                <button type="submit">Matches</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

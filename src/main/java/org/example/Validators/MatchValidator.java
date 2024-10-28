@@ -21,6 +21,6 @@ public class MatchValidator {
     }
 
     private boolean onlyLetters(String str) {
-        return str.matches("^[a-zA-Zа-яА-ЯёЁ]+$");
+        return str.matches("^[a-zA-Zа-яА-ЯёЁ0-9]+$");
     }
 }

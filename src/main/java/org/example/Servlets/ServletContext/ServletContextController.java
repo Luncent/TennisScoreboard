@@ -6,11 +6,13 @@ import org.example.Exceptions.EmptyException;
 import org.example.Models.ActiveMatch;
 import org.example.Services.MatchService;
 import org.example.Services.PlayerService;
-import org.example.Services.SaveMatchService;
+import org.example.Services.MatchPlayerService;
 import org.example.Utils.SessionSupplier;
 import org.example.Validators.MatchValidator;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -21,7 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @WebListener
-public class ServletContainerController implements ServletContextListener {
+public class ServletContextController implements ServletContextListener {
     private SessionFactory factory;
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -30,14 +32,24 @@ public class ServletContainerController implements ServletContextListener {
         SessionSupplier supplier = new SessionSupplier(factory);
         PlayerService playerService = new PlayerService(supplier);
         MatchService matchService = new MatchService(supplier);
-        SaveMatchService saveMatchService = new SaveMatchService(supplier);
+        MatchPlayerService saveMatchService = new MatchPlayerService(supplier);
         ConcurrentHashMap<UUID, ActiveMatch> matches = new ConcurrentHashMap<>();
+
+        TemplateEngine templateEngine = new TemplateEngine();
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setPrefix("templates/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode("HTML");
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateEngine.setTemplateResolver(templateResolver);
+
         try {
             initializeDB(playerService,saveMatchService);
         } catch (EmptyException e) {
             throw new RuntimeException(e);
         }
 
+        servletContextEvent.getServletContext().setAttribute("templateEngine", templateEngine);
         servletContextEvent.getServletContext().setAttribute("matchValidator",matchValidator);
         servletContextEvent.getServletContext().setAttribute("playerService", playerService);
         servletContextEvent.getServletContext().setAttribute("matchService", matchService);
@@ -45,14 +57,14 @@ public class ServletContainerController implements ServletContextListener {
         servletContextEvent.getServletContext().setAttribute("matches", matches);
     }
 
-    private void initializeDB(PlayerService playerService,SaveMatchService saveMatchService) throws EmptyException {
+    private void initializeDB(PlayerService playerService, MatchPlayerService saveMatchService) throws EmptyException {
         List<PlayerCreateDTO> players = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 1000; i++) {
             PlayerCreateDTO player = new PlayerCreateDTO("player" + i);
             players.add(player);
             playerService.save(player);
         }
-        for (int i = 1; i <= 10; i += 2) {
+        for (int i = 1; i <= 1000; i += 2) {
             MatchSaveDTO match = MatchSaveDTO.builder()
                     .player1(Long.valueOf(i))
                     .player2(Long.valueOf(i+1))

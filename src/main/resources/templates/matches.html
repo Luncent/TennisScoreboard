@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>New Match</title>
+	<link rel="stylesheet" th:href="@{css/matches.css}" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Akshar' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=ADLaM Display' rel='stylesheet'>
+</head>
+<body>
+    <div class="header">
+        <div class="headerLine">
+            <div class="headerLogoBox">
+                <p>Tennis scoreboard</p>
+            </div>
+            <div class="headerLogoBox">
+                <a th:href="@{/}">Home</a>
+                <a href="matches">Matches</a>
+            </div>
+        </div>
+    </div>
+    <main>
+        <div class="errorContainer">
+            <div th:if="${error!=null}" class="error">
+                <p th:text="${error}"></p>
+            </div>
+        </div>
+        <div class="matchesGlobalContainer">
+            <div class="matchesAndSearch">
+                <div class="formContainer">
+                    <form class="searchForm" method="GET" th:action="@{matches}">
+                        <input type="text" name="filter_by_player_name" placeholder="Enter player name">
+                        <button type="submit"><p>Search</p></button>
+                    </form>
+                </div>
+                <div class="matches">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>First player</th>
+                                <th>Second player</th>
+                                <th>Winner</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="match : ${matches}">
+                                <td th:text="${match.player1Name}">Иван</td>
+                                <td th:text="${match.player2Name}">Иван</td>
+                                <td th:text="${match.winnerName}">Иван</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="pagesGlobalContainer">
+            <div class="pagesContainer">
+                <ul th:if="${currentPage == 1 && pagesNumber >= 3}">
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=1)}">1</a>
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=2)}">2</a>
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=3)}">3</a>
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${pagesNumber})}" th:text="${pagesNumber}"></a>
+                </ul>
+
+                <ul th:if="${currentPage == 1 && pagesNumber < 3}">
+                    <li th:each="i : ${#numbers.sequence(1, pagesNumber)}">
+                        <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${i})}" th:text="${i}"></a>
+                    </li>
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${pagesNumber})}" th:text="${pagesNumber}"></a>
+                </ul>
+
+                <ul th:if="${currentPage != 1 && (currentPage + 1) <= pagesNumber}">
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${currentPage - 1})}" th:text="${currentPage - 1}"></a>
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${currentPage})}" th:text="${currentPage}"></a>
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${currentPage + 1})}" th:text="${currentPage + 1}"></a>
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${pagesNumber})}" th:text="${pagesNumber}"></a>
+                </ul>
+
+                <ul th:if="${currentPage == pagesNumber && pagesNumber >= 3}">
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${currentPage - 2})}" th:text="${currentPage - 2}"></a>
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${currentPage - 1})}" th:text="${currentPage - 1}"></a>
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${currentPage})}" th:text="${currentPage}"></a>
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${pagesNumber})}" th:text="${pagesNumber}"></a>
+                </ul>
+
+                <ul th:if="${currentPage == pagesNumber && pagesNumber < 3}">
+                    <li th:each="i : ${#numbers.sequence(1, currentPage)}">
+                        <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${i})}" th:text="${i}"></a>
+                    </li>
+                    <a th:href="@{matches(filter_by_player_name=${nameFilter}, page=${pagesNumber})}" th:text="${pagesNumber}"></a>
+                </ul>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

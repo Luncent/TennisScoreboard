@@ -6,7 +6,7 @@ import org.example.Exceptions.EmptyException;
 import org.example.Models.Score;
 import org.example.Services.MatchService;
 import org.example.Services.PlayerService;
-import org.example.Services.SaveMatchService;
+import org.example.Services.MatchPlayerService;
 import org.example.Utils.SessionSupplier;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -20,13 +20,41 @@ public class ServicesTest {
     SessionSupplier ss;
     PlayerService serv;
     MatchService mserv;
-    SaveMatchService sserv;
+    MatchPlayerService sserv;
 
     private void setupServices(SessionFactory factory){
         ss = new SessionSupplier(factory);
         serv = new PlayerService(ss);
         mserv = new MatchService(ss);
-        sserv = new SaveMatchService(ss);
+        sserv = new MatchPlayerService(ss);
+    }
+    private void fillData(SessionFactory factory) throws EmptyException {
+        List<PlayerCreateDTO> players = new ArrayList<>();
+        for (int i = 1; i <= 2000; i++) {
+            PlayerCreateDTO player = new PlayerCreateDTO("player" + i);
+            players.add(player);
+            serv.save(player);
+        }
+        for (int i = 1; i <= 2000; i += 2) {
+            MatchSaveDTO match = MatchSaveDTO.builder()
+                    .player1(Long.valueOf(i))
+                    .player2(Long.valueOf(i+1))
+                    .winner(Long.valueOf(i))
+                    .build();
+            sserv.save(match);
+        }
+        MatchSaveDTO match = MatchSaveDTO.builder()
+                .player1(1L)
+                .player2(5L)
+                .winner(5L)
+                .build();
+        sserv.save(match);
+        match = MatchSaveDTO.builder()
+                .player1(1L)
+                .player2(3L)
+                .winner(3L)
+                .build();
+        sserv.save(match);
     }
     @Test
     public void GetAll() throws EmptyException {
@@ -35,6 +63,27 @@ public class ServicesTest {
             fillData(factory);
             System.out.println(serv.getAll());
             System.out.println(mserv.getAll());
+        }
+    }
+
+    @Test
+    public void GetRowsCount() throws EmptyException {
+        try(SessionFactory factory = new Configuration().configure().buildSessionFactory()) {
+            setupServices(factory);
+            fillData(factory);
+            System.out.println(mserv.getRowsCount(""));
+            System.out.println(mserv.getRowsCount("1"));
+        }
+    }
+
+    @Test
+    public void GetPaginatedRows() throws EmptyException {
+        try(SessionFactory factory = new Configuration().configure().buildSessionFactory()) {
+            setupServices(factory);
+            fillData(factory);
+            //System.out.println(mserv.selectPaginated("1",1,10));
+            System.out.println("======================");
+            System.out.println(mserv.selectPaginated("",2,10));
         }
     }
 
@@ -56,10 +105,10 @@ public class ServicesTest {
         try (SessionFactory factory = new Configuration().configure().buildSessionFactory()) {
             setupServices(factory);
             fillData(factory);
-            Optional<Player> player = serv.getByName("player1");
-            List<Match> matches = mserv.getByPlayerName("player1");
+            //Optional<Player> player = serv.getByName("player1");
+            List<Match> matches = mserv.getByPlayerName("");
 
-            System.out.println(player.get());
+            //System.out.println(player.get());
             System.out.println(matches);
         }
     }
@@ -69,38 +118,11 @@ public class ServicesTest {
         String str = "   we ewd  ";
         System.out.println("ed"+str.trim()+"ed");
     }
+
     @Test
     public void test2(){
         System.out.println(Score.SECOND_POINT.ordinal());
     }
 
-    private void fillData(SessionFactory factory) throws EmptyException {
-        List<PlayerCreateDTO> players = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            PlayerCreateDTO player = new PlayerCreateDTO("player" + i);
-            players.add(player);
-            serv.save(player);
-        }
-        for (int i = 1; i <= 10; i += 2) {
-            MatchSaveDTO match = MatchSaveDTO.builder()
-                    .player1(Long.valueOf(i))
-                    .player2(Long.valueOf(i+1))
-                    .winner(Long.valueOf(i))
-                    .build();
-            sserv.save(match);
-        }
-        MatchSaveDTO match = MatchSaveDTO.builder()
-                .player1(1L)
-                .player2(5L)
-                .winner(5L)
-                .build();
-        sserv.save(match);
-        match = MatchSaveDTO.builder()
-                .player1(1L)
-                .player2(3L)
-                .winner(3L)
-                .build();
-        sserv.save(match);
-    }
 }
 

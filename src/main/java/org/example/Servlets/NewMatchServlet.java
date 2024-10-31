@@ -72,7 +72,7 @@ public class NewMatchServlet extends HttpServlet {
                 ActiveMatch newMatch = new ActiveMatch(player1.getId(),player2.getId());
                 matches.put(newMatchID,newMatch);
 
-                resp.sendRedirect("/match-score?uuid="+newMatchID);
+                resp.sendRedirect(req.getContextPath()+"/match-score?uuid="+newMatchID);
             }
         } catch (ValidationException ex){
             ex.printStackTrace();

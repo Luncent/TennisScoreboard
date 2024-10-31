@@ -4,9 +4,10 @@ import org.example.DTO.MatchSaveDTO;
 import org.example.DTO.PlayerCreateDTO;
 import org.example.Exceptions.EmptyException;
 import org.example.Models.ActiveMatch;
+import org.example.Services.ActiveMatchService;
 import org.example.Services.MatchService;
 import org.example.Services.PlayerService;
-import org.example.Services.MatchPlayerService;
+import org.example.Services.SaveMatchService;
 import org.example.Utils.SessionSupplier;
 import org.example.Validators.MatchValidator;
 import org.hibernate.SessionFactory;
@@ -32,8 +33,9 @@ public class ServletContextController implements ServletContextListener {
         SessionSupplier supplier = new SessionSupplier(factory);
         PlayerService playerService = new PlayerService(supplier);
         MatchService matchService = new MatchService(supplier);
-        MatchPlayerService saveMatchService = new MatchPlayerService(supplier);
+        SaveMatchService saveMatchService = new SaveMatchService(supplier);
         ConcurrentHashMap<UUID, ActiveMatch> matches = new ConcurrentHashMap<>();
+        ActiveMatchService activeMatchService = new ActiveMatchService(matches,playerService,supplier, saveMatchService);
 
         TemplateEngine templateEngine = new TemplateEngine();
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
@@ -49,6 +51,7 @@ public class ServletContextController implements ServletContextListener {
             throw new RuntimeException(e);
         }
 
+        servletContextEvent.getServletContext().setAttribute("activeMatchService", activeMatchService);
         servletContextEvent.getServletContext().setAttribute("templateEngine", templateEngine);
         servletContextEvent.getServletContext().setAttribute("matchValidator",matchValidator);
         servletContextEvent.getServletContext().setAttribute("playerService", playerService);
@@ -57,7 +60,7 @@ public class ServletContextController implements ServletContextListener {
         servletContextEvent.getServletContext().setAttribute("matches", matches);
     }
 
-    private void initializeDB(PlayerService playerService, MatchPlayerService saveMatchService) throws EmptyException {
+    private void initializeDB(PlayerService playerService, SaveMatchService saveMatchService) throws EmptyException {
         List<PlayerCreateDTO> players = new ArrayList<>();
         for (int i = 1; i <= 1000; i++) {
             PlayerCreateDTO player = new PlayerCreateDTO("player" + i);

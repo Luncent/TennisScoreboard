@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="formContainer">
-            <form th:action="@{/new-match}" method="POST">
+            <form method="POST" th:action="@{/new-match}" >
                 <div class="insideFormContainer">
                     <div class="labelsInputsContainer">
                         <div class="oneMoreLInputsContainer">
@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <div class="buttonContainer">
-                        <button>Start Match</button>
+                        <button type="submit">Start Match</button>
                     </div>
                 </div>
             </form>

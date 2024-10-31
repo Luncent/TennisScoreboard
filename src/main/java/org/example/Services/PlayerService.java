@@ -49,7 +49,7 @@ public class PlayerService {
 
     public Optional<Player> getById(Long id){
         try(Session session = supplier.getProxySession()){
-            Transaction t = session.beginTransaction();
+            Transaction t= session.getTransaction().isActive() ? session.getTransaction() : session.beginTransaction();
             try {
                 PlayerRepository repo = new PlayerRepository(session);
                 Optional<Player> player = repo.getById(id);

@@ -14,7 +14,7 @@ import org.hibernate.Transaction;
 import java.util.Optional;
 
 @AllArgsConstructor
-public class MatchPlayerService {
+public class SaveMatchService {
     private SessionSupplier supplier;
 
     public Match save(MatchSaveDTO dto) throws EmptyException{

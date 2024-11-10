@@ -9,7 +9,7 @@ import java.util.Map;
 
 
 public class ActiveMatch {
-    private final List<MatchSet> matchSets = new ArrayList<>(3);
+    private final List<MatchSet> matchSets = new ArrayList<>(3); // magic number
     private final Map<Long, Integer> playersVictorySets = new HashMap<>();
     private int currentSet = 0;
     @Getter
@@ -29,7 +29,7 @@ public class ActiveMatch {
 
     public boolean addPoint(Long player_id) {
         Long result = matchSets.get(currentSet).addPoint(player_id);
-        if(result!=0){
+        if(result!=0){ // you can invert and make an early return for if (result == 0) - this will allow to increase readability
             if(playersVictorySets.get(player_id)==setsForVictory){
                 playersVictorySets.compute(player_id, (k, temp) -> temp + 1);
                 return true;

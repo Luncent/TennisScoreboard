@@ -49,6 +49,7 @@ public class PlayerService {
 
     public Optional<Player> getById(Long id){
         try(Session session = supplier.getProxySession()){
+            // you can put this logic under some util and use it everywhere
             Transaction t= session.getTransaction().isActive() ? session.getTransaction() : session.beginTransaction();
             try {
                 PlayerRepository repo = new PlayerRepository(session);

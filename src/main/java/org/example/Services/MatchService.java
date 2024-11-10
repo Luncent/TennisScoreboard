@@ -19,7 +19,8 @@ public class MatchService {
         try(Session session = supplier.getProxySession()){
             Transaction t = session.beginTransaction();
             try{
-                MatchRepository repo = new MatchRepository(session);
+                MatchRepository repo = new MatchRepository(session); 
+                // same comment as in prev project, don't think you need to create a new repo object all the time.
                 List<Match> matches = repo.getAll();
                 t.commit();
                 return matches;

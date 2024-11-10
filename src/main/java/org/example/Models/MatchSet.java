@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 @Getter
 public class MatchSet {
-    Map<Long, Score> scores = new HashMap<>();
+    Map<Long, Score> scores = new HashMap<>(); // private
     private GameState gameState = GameState.BEFORE_GAME_POINT;
     Long player1_id;
     Long player2_id;
@@ -26,9 +26,11 @@ public class MatchSet {
     private void simpleAddPoint(Long p) {
         int current;
         current = scores.get(p).ordinal();
+        // i kinda doubt you decision to rely on the ordinal of the enum values.
+        // if you'll decide to complicate the logic and extend enum somehow, your logic can become non-usable.
         scores.put(p, Score.values()[current + 1]);
 
-        if (isSimpleGamePoint()) gameState = GameState.SIMPLE_GAME_POINT;
+        if (isSimpleGamePoint()) gameState = GameState.SIMPLE_GAME_POINT; // use {} even for 1 liners, decreases % of mistakes
     }
 
     private void addSimpleGamePoint(Long p) {

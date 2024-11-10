@@ -14,7 +14,8 @@ public class MatchesFinishedDTO {
     private String player2Name;
     private String winnerName;
 
-    public static List<MatchesFinishedDTO> convert(List<Match> matches) {
+    public static List<MatchesFinishedDTO> convert(List<Match> matches) { 
+        // such logic is usually extracted to separate layer (converters) to separate entities and dto-s from each other
         List<MatchesFinishedDTO> convertedMatches = new ArrayList<>();
         for (Match match : matches) {
             MatchesFinishedDTO dto = MatchesFinishedDTO.builder()

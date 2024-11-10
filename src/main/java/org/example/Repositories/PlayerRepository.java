@@ -11,10 +11,10 @@ public class PlayerRepository extends BaseRepository<Player, Long>{
     public PlayerRepository(Session sessionProxy){
         super(sessionProxy, Player.class);
     }
-
+ 
     @Override
     public Player save(Player entity) {
-        return super.save(entity);
+        return super.save(entity); // less code the better, i'd delete all this that just inherits parent
     }
 
     @Override

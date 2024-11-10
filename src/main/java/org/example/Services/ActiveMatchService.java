@@ -62,11 +62,11 @@ public class ActiveMatchService {
             matchPlayerService.save(matchSaveDTO);
             return matchSaveDTO;
         }
-        else return MatchSaveDTO.createEmpty();
+        else return MatchSaveDTO.createEmpty(); // {return ...}
     }
 
     public void removeMatch(UUID matchId){
         matches.remove(matchId);
-        System.out.println("match deleted from active matches collection");
+        System.out.println("match deleted from active matches collection"); // to use logger
     }
 }

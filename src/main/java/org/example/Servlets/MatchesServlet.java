@@ -39,7 +39,7 @@ public class MatchesServlet extends HttpServlet {
         int currentPageNumber = 1;
         try{
              currentPageNumber = Integer.parseInt(currentPage);
-        }catch (Exception e){}
+        }catch (Exception e){} // would move to some util
 
         try{
             List<MatchesFinishedDTO> dtomatches;
@@ -54,7 +54,7 @@ public class MatchesServlet extends HttpServlet {
                 pagesNumber = (double) matchService.getRowsCount("").intValue() /matchesOnPage;
                 pagesNumber = pagesNumber>(int)pagesNumber?(int)pagesNumber+1:pagesNumber;
                 dtomatches = MatchesFinishedDTO
-                        .convert(matchService.selectPaginated("",currentPageNumber,matchesOnPage));
+                        .convert(matchService.selectPaginated("",currentPageNumber,matchesOnPage)); // almost duplicated block
             }
 
             context.setVariable("nameFilter",nameFilter);

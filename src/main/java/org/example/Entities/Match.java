@@ -1,6 +1,6 @@
 package org.example.Entities;
 
-import lombok.*;
+import lombok.*; // .* imports are not really recommended
 
 import javax.persistence.*;
 
@@ -20,7 +20,9 @@ import javax.persistence.*;
 @ToString
 @Builder(access = AccessLevel.PUBLIC, builderClassName = "builder")
 @Getter
-@Setter
+@Setter 
+// lombok also has @Data, which is a combo of most annotations u used. 
+// After java 17 devs tend to choose records due to their immutability
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

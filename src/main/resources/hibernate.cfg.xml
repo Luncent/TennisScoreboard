@@ -11,7 +11,7 @@
     <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 
-    <!-- DB schema will be updated if needed -->
+    <!-- DB schema will be updated if needed createOrUpdate needed?-->
     <property name="hibernate.hbm2ddl.auto">create</property>
     <property name="show_sql">true</property>
     <property name="format_sql">true</property>

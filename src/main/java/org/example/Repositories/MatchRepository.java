@@ -43,7 +43,7 @@ public class MatchRepository extends BaseRepository<Match,Long>{
     public List<Match> getByPlayerName(String name){
         if(name==null || name.isEmpty()){
             return sessionProxy.createQuery("FROM Match m",clazz)
-                    .setHint(GraphSemantic.LOAD.getJpaHintName(), graph)
+                    .setHint(GraphSemantic.LOAD.getJpaHintName(), graph) // not sure what this thing does, may be can be removed? or put in main config, as is repeated?
                     .list();
         }
         return sessionProxy
@@ -74,7 +74,7 @@ public class MatchRepository extends BaseRepository<Match,Long>{
     }
 
     public List<Match> selectPaginated(String playerName, int page, int pageSize) {
-        if(playerName==null || playerName.isEmpty()){
+        if(playerName==null || playerName.isEmpty()){ // you could prevent writing this extra code by early param validation
             return sessionProxy.createQuery("FROM Match m",clazz)
                     .setFirstResult((page-1)*pageSize)
                     .setMaxResults(pageSize)
@@ -84,7 +84,7 @@ public class MatchRepository extends BaseRepository<Match,Long>{
         else{
             return sessionProxy.createQuery("FROM Match m WHERE" +
                             " LOWER(m.player1.name) LIKE LOWER(:name)" +
-                            " OR LOWER(m.player2.name) LIKE LOWER(:name)",clazz)
+                            " OR LOWER(m.player2.name) LIKE LOWER(:name)",clazz) // query is duplicated; can be a const
                     .setParameter("name", "%"+playerName+"%")
                     .setFirstResult((page-1)*pageSize)
                     .setMaxResults(pageSize)

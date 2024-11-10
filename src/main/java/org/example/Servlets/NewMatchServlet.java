@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NewMatchServlet extends HttpServlet {
     private MatchValidator matchValidator;
     private PlayerService playerService;
-    private ConcurrentHashMap<UUID, ActiveMatch> matches;
+    private ConcurrentHashMap<UUID, ActiveMatch> matches; // can be just hashmap, as you don't really use thread-safety in code
     private TemplateEngine templateEngine;
 
     @Override
@@ -55,9 +55,9 @@ public class NewMatchServlet extends HttpServlet {
         MatchCreateDTO dto  = new MatchCreateDTO(firstPlayerName,secondPlayerName);
         try{
             //сохранение в бд только при конце матча
-            if(matchValidator.validateCreateDTO(dto)) {
+            if(matchValidator.validateCreateDTO(dto)) { // throw ex if not valid for early return
                 Player player1,player2;
-                Optional<Player> optionalPlayer =  playerService.getByName(firstPlayerName);
+                Optional<Player> optionalPlayer =  playerService.getByName(firstPlayerName); // check Optional.orElseGet
                 if(!optionalPlayer.isPresent()){
                     player1 = playerService.save(new PlayerCreateDTO(firstPlayerName));
                 }
